@@ -1,7 +1,9 @@
 const express = require('express');
 const router = express.Router();
 
-const configs = require('../util/config')
+const configs = require('../util/config');
+const req = require('express/lib/request');
+const cache = require('../redis');
 
 let visits = 0
 
@@ -12,6 +14,14 @@ router.get('/', async (req, res) => {
   res.send({
     ...configs,
     visits
+  });
+});
+
+router.get('/statistics', async (req, res) => {
+  let todoCount = await cache.getAsync('added_todos');
+  if (!todoCount) todoCount = 0;
+  res.json({
+    added_todos: todoCount
   });
 });
 
