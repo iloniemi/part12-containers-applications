@@ -18,7 +18,7 @@ router.post('/', async (req, res) => {
 
   const postCount = await cache.getAsync('added_todos');
   const newPostCount = postCount
-    ? postCount+1
+    ? Number(postCount)+1
     : 1
   await cache.setAsync('added_todos', newPostCount);
 

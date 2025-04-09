@@ -62,3 +62,4 @@ typings/
 
 # own additions
 mongo_data
+redis_data
