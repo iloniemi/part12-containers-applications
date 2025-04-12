@@ -1,0 +1,27 @@
+services:
+  backend:
+    image: phonebook-backend
+    build: 
+      context: ./backend/
+      dockerfile: Dockerfile
+    container_name: phonebook-backend
+    env_file:
+      - ./backend/.env
+    ports:
+      - 3001:3001
+  frontend:
+    image: phonebook-frontend
+    build:
+      context: ./frontend/ # The context will pick this directory as the "build context"
+      dockerfile: Dockerfile # This will simply tell which dockerfile to read
+    container_name: phonebook-frontend # This will name the container hello-front-dev
+  nginx:
+    image: nginx:1.20.1
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - 8080:80
+    container_name: reverse-proxy
+    depends_on:
+      - frontend # wait for the frontend container to be started
+      - backend
