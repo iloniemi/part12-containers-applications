@@ -1,22 +1,18 @@
 services:
-  app:
-    image: hello-front-dev
+  frontend:
+    image: todo-frontend
     build:
       context: ./todo-frontend/ # The context will pick this directory as the "build context"
-      dockerfile: dev.Dockerfile # This will simply tell which dockerfile to read
-    volumes:
-      - ./todo-frontend:/usr/src/app # The path can be relative, so ./ is enough to say "the same location as the docker-compose.yml"
-    container_name: hello-front-dev # This will name the container hello-front-dev
+      dockerfile: Dockerfile # This will simply tell which dockerfile to read
+    container_name: todo-frontend # This will name the container hello-front-dev
     environment:
       - VITE_BACKEND_URL=http://localhost:8080/api
-  server:
-    image: hello-backend-dev # names the image
+  backend:
+    image: todo-backend # names the image
     build:
       context: ./todo-backend # The context will pick this directory as the "build context"
-      dockerfile: dev.Dockerfile # This will simply tell which dockerfile to read
-    volumes:
-      - ./todo-backend:/usr/src/app # The path can be relative, so ./ is enough to say "the same location as the docker-compose.yml"
-    container_name: hello-backend-dev # This will name the container hello-backend-dev
+      dockerfile: Dockerfile # This will simply tell which dockerfile to read
+    container_name: todo-backend # This will name the container hello-backend-dev
     environment: 
       - REDIS_URL=redis://redis:6379
       - MONGO_URL=mongodb://the_username:the_password@mongo:27017/the_database
@@ -37,10 +33,10 @@ services:
   nginx:
     image: nginx:1.20.1
     volumes:
-      - ./nginx.dev.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
     ports:
       - 8080:80
     container_name: reverse-proxy
     depends_on:
-      - app # wait for the frontend container to be started
-      - server
+      - frontend # wait for the frontend container to be started
+      - backend
